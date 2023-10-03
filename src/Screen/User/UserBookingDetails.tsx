@@ -10,6 +10,7 @@ import { BookingAdd } from '../../Api/Method';
 import { ParamListBase, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SuccessfullyMsg from '../../Common/SuccessfullyMsg';
 
 enum Url {
   UserPayment = 'UserPayment',
@@ -20,15 +21,14 @@ const UserBookingDetails = (props: any) => {
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase, Url>>()
   const price = props?.route?.params?.price
-  const HomeCareID = props?.route?.params?.HomeCareID
 
   const GetUserID = async() => {
-    const CaretakerId = await AsyncStorage.getItem('CaretakerId')
-    const UserID = await AsyncStorage.getItem('UserID')
-    setUserID(UserID)
-    setCaretakerId(CaretakerId)
-    console.log('CaretakerId ===============>', CaretakerId);
-    console.log('UserID ===============>', UserID);
+    const caretaker_id = await AsyncStorage.getItem('caretaker_id')
+    const homecare_id = await AsyncStorage.getItem('homecare_id')
+    const user_id = await AsyncStorage.getItem('user_id')
+    setuser_id(user_id)
+    setcaretaker_id(caretaker_id)
+    sethomecare_id(homecare_id)   
   }
   
   useEffect(() => {
@@ -36,9 +36,9 @@ const UserBookingDetails = (props: any) => {
   }, [])
 
 
-  const [UserID, setUserID] = useState<any>('')
-  const [CaretakerId, setCaretakerId] = useState<any>('')
-
+  const [user_id, setuser_id] = useState<any>('')
+  const [caretaker_id, setcaretaker_id] = useState<any>('')
+  const [homecare_id, sethomecare_id] = useState<any>('')
   const [selectUser, setSelectUser] = useState(1)
 
   const [startDate, setStartDate] = useState<any>(new Date());
@@ -63,6 +63,9 @@ const UserBookingDetails = (props: any) => {
   
   const [PriceTotalHRS, setPriceTotalHRS] = useState<number | any>(null)
   const [TotalPrice, setTotalPrice] = useState<any>('')
+  const [StartTimeFormat, setStartTimeFormat] = useState<any>('')
+  const [EndTimeFormat, setEndTimeFormat] = useState<any>('')
+  const [visible, setVisible] = useState(false)
 
 
   const StartDatePicker = () => {
@@ -138,11 +141,24 @@ const UserBookingDetails = (props: any) => {
 
   const handleStartTimeConfirm = (time: any) => {
     setStartTime(time);
+    const selectedTime = new Date(time);
+    const hours = selectedTime.getHours();
+    const minutes = selectedTime.getMinutes();
+    const seconds = selectedTime.getSeconds();
+    const FormatTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    setStartTimeFormat(FormatTime)
     hideStartTimePicker();
   };
+
   
   const handleEndTimeConfirm = (time: any) => {
     setEndTime(time);
+    const selectedTime = new Date(time);
+    const hours = selectedTime.getHours();
+    const minutes = selectedTime.getMinutes();
+    const seconds = selectedTime.getSeconds();
+    const FormatTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    setEndTimeFormat(FormatTime)
     hideEndTimePicker();
   };
 
@@ -224,17 +240,16 @@ const UserBookingDetails = (props: any) => {
   
 
   
-  
 
   const UserBookingAPI = async() => {
     const params = {
-      "user_id" : UserID,
-      "homecare_id" : HomeCareID,
-      "caretaker_id" : CaretakerId,
+      "user_id" : user_id,
+      "homecare_id" : homecare_id,
+      "caretaker_id" : caretaker_id,
       "start_date": StartNewFormatDate,
       "end_date": EndNewFormatDate,
-      "shift_start_time": startTime,
-      "shift_end_time": endTime,
+      "shift_start_time": StartTimeFormat,
+      "shift_end_time": EndTimeFormat,
       "total_hours": TotalCount,
       "rate_per_hour": price,
       "total_amount": TotalPrice,
@@ -246,16 +261,25 @@ const UserBookingDetails = (props: any) => {
     try {
       const response = await BookingAdd(params)
       console.log('User booking api call response', response);
-      
+      if(response) {
+        setVisible(true)
+        setTimeout(() => {
+          navigation.navigate('UserPayment')
+        }, 3000);
+      }
     } catch (error) {
-      console.log('User booking api call error', error);
-      
+      console.log('User booking api call error', error);      
     }
   }
 
 
   const handleBack = () => {
     navigation.goBack();
+  }
+
+  const closeModal = () => {
+    setVisible(false)
+    navigation.navigate('UserPayment')
   }
 
   return (
@@ -478,6 +502,20 @@ const UserBookingDetails = (props: any) => {
             <Text style={[Styles.textWhite, Styles.fontMedium18]}>{Strings.Payment}</Text>
           </TouchableOpacity>
         </ScrollView>
+
+        <SuccessfullyMsg visible={visible}>
+          <View style={{position: 'relative'}}>
+            <TouchableOpacity style={{position: 'absolute', right: -35, top: -15}} onPress={closeModal}>
+              <Image source={Images.fill_delete} style={{width: 38, height: 38}}/>
+            </TouchableOpacity>
+            <Image source={Images.alert_bg} style={{width: '100%', height: 132}}/>
+            <View style={{alignItems: 'center'}}>
+              <Image source={Images.alert_done} style={Styles.recentPic}/>
+              <Text style={[Styles.fontBlackMedium24, Styles.marginVertical20, Styles.fontMedium24]}>Congratulations!</Text>
+              <Text style={{fontFamily: 'GothamRounded-Book', fontWeight: '400', fontSize: 18, lineHeight: 25}}>{Strings.AppointmentBook}</Text>
+            </View>
+          </View>
+      </SuccessfullyMsg>
     </>
   );
 }

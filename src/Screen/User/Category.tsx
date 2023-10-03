@@ -33,7 +33,6 @@ const Category = ({ navigation }: { navigation: any }) => {
       if (response?.data?.ResponseData?.token) {       
         console.log('token ===>', response?.data?.ResponseData?.token);        
       }
-      console.log('CategoryList API Call ==>', response.status);      
       setData(response?.data?.ResponseData?.category)
     }else{    
       console.log('CategoryList API Call  Error ==>', response);
@@ -73,7 +72,11 @@ const Category = ({ navigation }: { navigation: any }) => {
                   <TouchableOpacity onPress={() => navigation.navigate('EmptyCategory', {name: item.name})}>
 
                     <View style={[Styles.boxShadow, Styles.m10, Styles.border]}>
-                      <Image source={{uri : IMAGE_URL + item.image}} style={Styles.CategoryImg} resizeMode='contain' />
+                      {item.image ? 
+                        <Image source={{uri : item.image}} style={Styles.CategoryImg} resizeMode='contain' />
+                        :
+                        <Image source={Images.avatar} style={Styles.CategoryImg} resizeMode='contain' />
+                      }
                       <Text style={[Styles.fontBlack16, Styles.textCenter, Styles.pt10, Styles.fontBook16]}>
                         {item?.name}
                       </Text>

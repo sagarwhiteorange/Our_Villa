@@ -147,6 +147,7 @@ const Strings = {
     ResetPasswordMsg: 'Your password has been changed successfully.',
     RegisterMsg: 'Congratulations, Your account has been successfully created.',
     CreatePersonMsg: 'Congratulations, Details Added successfully.',
+    AppointmentBook: 'Congratulations, Your Appointment is book successfully.',
     LoginMsg: 'You have successfully logged in.',
     TakePhoto: 'Take photo',
     ChooseGallery: 'Choose from gallery',

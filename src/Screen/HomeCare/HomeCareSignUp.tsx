@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, ScrollView, FlatList, PermissionsAndroid} from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, ScrollView, PermissionsAndroid} from 'react-native';
 import Styles from '../../Styles/Styles';
 import Images from '../../Constant/Images';
 import Strings from '../../Constant/Strings';
 import { Path, Svg } from 'react-native-svg';
-import * as Animatable from 'react-native-animatable';
 import AppBg from '../../Common/AppBg';
 import Colors from '../../Theme/Colors';
 import { CityList, CountryList, StateList, UserRegister } from '../../Api/Method';
@@ -74,6 +73,7 @@ const HomeCareSignUp = () => {
   const [ConfirmPasswordFocusBorder, setConfirmPasswordFocusBorder] = useState('#FFF')
   const [DOBFocusBorder, setDOBFocusBorder] = useState('#FFF')
   const [AddressFocusBorder, setAddressFocusBorder] = useState('#FFF')
+  const [PhoneNumberBorder, setPhoneNumberFocusBorder] = useState('#FFF')
 
   const [FirstNameFocusIcon, setFirstNameFocusIcon] = useState(false)
   const [LastNameFocusIcon, setLastNameFocusIcon] = useState(false)
@@ -82,6 +82,7 @@ const HomeCareSignUp = () => {
   const [ConfirmPasswordFocusIcon, setConfirmPasswordFocusIcon] = useState(false)
   const [DOBFocusIcon, setDOBFocusIcon] = useState(false)
   const [AddressFocusIcon, setAddressFocusIcon] = useState(false)
+  const [PhoneNumberIcon, setPhoneNumberIcon] = useState(false)
 
 
   const handleFirstNameFocusIcon = () => { setFirstNameFocusIcon(!FirstNameFocusIcon) }
@@ -99,6 +100,7 @@ const HomeCareSignUp = () => {
   const customFocusConfirmPassword = () => { setConfirmPasswordFocusBorder('#03849C') }
   const customFocusDOB = () => { setDOBFocusBorder('#03849C') }
   const customFocusAddress = () => { setAddressFocusBorder('#03849C') }
+  const customFocusPhoneNumber = () => { setPhoneNumberFocusBorder('#03849C') }
 
   const customBlurEmail = () => { setEmailFocusBorder('#FFF') }
   const customBlurPassword = () => { setPasswordFocusBorder('#FFF') }
@@ -107,6 +109,7 @@ const HomeCareSignUp = () => {
   const customBlurConfirmPassword = () => { setConfirmPasswordFocusBorder('#FFF') }
   const customBlurDOB = () => { setDOBFocusBorder('#FFF') }
   const customBlurAddress = () => { setAddressFocusBorder('#FFF') }
+  const customBlurPhoneNumber = () => { setPhoneNumberFocusBorder('#FFF') }
 
   const [FirstName, setFirstName] = useState('');
   const [LastName, setLastName] = useState('');
@@ -133,7 +136,7 @@ const HomeCareSignUp = () => {
   const [ExperienceValue, setExperienceValue] = useState('');
   const [Price, setPrice] = useState('');
   const [selectedSkills, setSelectedSkills] = useState<any>([]);
-  const [SkillsValue, setSkillsValue] = useState<any>([]);
+  const [SkillsValue, setSkillsValue] = useState<string[]>([]);
   const [errorEmail, setErrorEmail] = useState('')
   const [errorPassword, setErrorPassword] = useState('')
   const [errorConfirmPassword, setErrorConfirmPassword] = useState('')
@@ -265,7 +268,7 @@ const HomeCareSignUp = () => {
   const handleSelect = (selectedItem: any) => {
     if (selectedSkills.includes(selectedItem.label)) {
       setSelectedSkills(selectedSkills.filter((skill: any) => skill !== selectedItem.label)); 
-      setSkillsValue((prevSkillsValue: any) => prevSkillsValue.filter((value: any) => value !== selectedItem.value));     
+      setSkillsValue((prevSkillsValue: string[]) => prevSkillsValue.filter((value: string) => value !== selectedItem.value));     
     } else {
       setSelectedSkills([...selectedSkills, selectedItem.label]);
       setSkillsValue([...SkillsValue, selectedItem.value]);
@@ -443,7 +446,9 @@ const HomeCareSignUp = () => {
     formData.append('birth_country', selectedCountry)
     formData.append('gender', SelectGender)
     formData.append('phone_number', PhoneNumber) 
-    formData.append('city', City)      
+    formData.append('city', City)
+    formData.append('province_state', State)
+    formData.append('country', Country)      
     formData.append('current', Current)
     
     console.log('formData ============================>', formData);
@@ -452,8 +457,6 @@ const HomeCareSignUp = () => {
       setLoading(true);
       const response = await UserRegister(formData);
       setLoading(false);
-      setErrorResponseBirth(response?.ResponseData?.date_of_birth[0]);
-      setErrorResponseText(response?.ResponseData?.errors[0])
       if (response && response.ResponseData) {
         const certnUrl = response.ResponseData.Homecareuser?.certn_url;
         if (certnUrl) {
@@ -461,9 +464,9 @@ const HomeCareSignUp = () => {
           console.log('certn_url', certnUrl);
           navigation.navigate('HomeCateCertn', { Certn: certnUrl });
         }
-      }
-    
-      if (response && response.status === false && response.data && response.data.ResponseData.errors) {
+        setErrorResponseBirth(response?.ResponseData?.date_of_birth[0]);
+        setErrorResponseText(response?.ResponseData?.errors[0])        
+      } else if (response && response.status === false && response.data && response.data.ResponseData.errors) {
         const validationErrors = response.data.ResponseData.errors;
         console.log('validationErrors ==========================>', validationErrors);
       } else {
@@ -571,8 +574,9 @@ const HomeCareSignUp = () => {
           <View style={Styles.mt10}>
               <Text style={[Styles.fontBlack16, Styles.fontBook16,]}>{Strings.PhoneNumber}</Text>
               <View style={Styles.formControl}>
+                {!PhoneNumberIcon ? <Image source={Images.phone_gray} style={Styles.authIconWidth} /> : <Image source={Images.phone_black} style={Styles.authIconWidth} />}
                 <TextInput placeholder='Type here...' keyboardType='number-pad'
-                  style={[ Styles.CustomWidth,Styles.fontBook14, Styles.pl10, Styles.textBlack, { textAlignVertical: 'top' }]} 
+                  style={[ Styles.CustomWidth,Styles.fontBook14, Styles.pl10, Styles.textBlack, { textAlignVertical: 'center' }]} 
                   value={PhoneNumber}
                   placeholderTextColor='#818D8E'
                   onChangeText={text => setPhoneNumber(text)}

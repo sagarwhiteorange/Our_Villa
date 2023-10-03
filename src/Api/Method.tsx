@@ -60,7 +60,7 @@ async function ResetPassword(params: any) {
 
 async function CaretakerPersonList(params: any) {
     let url = API_SERVICE.CaretakerPersonList
-    const result = await POSTRequest(url, params)
+    const result = await GETRequest(url, params)
     return result
 }
 

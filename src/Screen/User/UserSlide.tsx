@@ -1,107 +1,136 @@
 import React from 'react';
-import Onboarding from 'react-native-onboarding-swiper';
-import { Image, View, Text, TouchableOpacity } from 'react-native';
-import Styles from '../../Styles/Styles';
-import * as Animatable from 'react-native-animatable';
-import { ParamListBase, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Strings from '../../Constant/Strings';
+import { SafeAreaView, Image, FlatList, View, Text, TouchableOpacity, Dimensions} from 'react-native';
 import Images from '../../Constant/Images';
+import Strings from '../../Constant/Strings';
+import Styles from '../../Styles/Styles';
 import AppBg from '../../Common/AppBg';
 
+const { width, height } = Dimensions.get('window');
 
-enum Url {
-  HomeCareSignIn = 'HomeCareSignIn',
-}
+const slides = [
+  {
+    id: '1',
+    image: Images.onboarding_one,
+    title: Strings.BoardingTitleOne,
+    subtitle: Strings.BoardingOneDescription,
+  },
+  {
+    id: '2',
+    image: Images.onboarding_two,
+    title: Strings.BoardingTitleOne,
+    subtitle: Strings.BoardingTwoDescription,
+  },
+  {
+    id: '3',
+    image: Images.onboarding_three,
+    title: Strings.BoardingTitleThree,
+    subtitle: Strings.BoardingThreeDescription,
+  },
+];
 
-const HomeCareSlide = () => {  
+const Slide = ({ item }: {item: any}) => {
+  return (
+    <View style={{position: 'relative', zIndex: 99,}}>
+      <View style={[Styles.OnBoardingImgView, { marginTop: 80 }]}>
+        <Image source={item?.image} style={[Styles.OnBoardingImg, Styles.width1_2]} resizeMode='contain' />
+      </View>
+      <View style={[Styles.OnBoardingTextView, { marginTop: 50 }]}>
+        <Text style={[Styles.fontBlack24, Styles.fontBold24]}>{item?.title}</Text>
+        <Text style={[Styles.fontGray16, Styles.fontBook16]}>{item?.subtitle}</Text>
+      </View>
+    </View>
+  );
+};
 
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase, Url>>()
+const UserSlide = ({ navigation } : {navigation: any}) => {
+  const [currentSlideIndex, setCurrentSlideIndex] = React.useState(0);
+  const ref = React.useRef();
+  const updateCurrentSlideIndex = e => {
+    const contentOffsetX = e.nativeEvent.contentOffset.x;
+    const currentIndex = Math.round(contentOffsetX / width);
+    setCurrentSlideIndex(currentIndex);
+  };
+
+  const goToNextSlide = () => {
+    const nextSlideIndex = currentSlideIndex + 1;
+    if (nextSlideIndex != slides.length) {
+      const offset = nextSlideIndex * width;
+      ref?.current.scrollToOffset({ offset });
+      setCurrentSlideIndex(currentSlideIndex + 1);
+    }
+  };
+
+  const skip = () => {
+    const lastSlideIndex = slides.length - 1;
+    const offset = lastSlideIndex * width;
+    ref?.current.scrollToOffset({ offset });
+    setCurrentSlideIndex(lastSlideIndex);
+  };
+
+  const Footer = () => {
+    return (
+        <View style={{ marginBottom: 20, position: 'absolute', width: '100%', height: '100%'}}>
+          {currentSlideIndex == slides.length - 1 ? (
+            <View style={{width: '100%', height: '100%'}}>
+              <TouchableOpacity
+                style={[Styles.alignSelfCenter, {marginTop: 80,position: 'absolute', bottom: 20,}]}
+                onPress={() => navigation.replace('UserSignIn')}>
+                <Image source={Images.step3} style={{ width: 150, height: 150 }} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={{width: '100%', height: '100%'}}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={{position: 'absolute', top: 20, right: 20,}}
+                onPress={skip}>
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 15,
+                  }}>
+                  SKIP
+                </Text>
+              </TouchableOpacity>
+              <View style={{ width: 15 }} />
+              <TouchableOpacity
+                style={[Styles.alignSelfCenter, {marginTop: 80, position: 'absolute', bottom: 20,}]}
+                activeOpacity={0.8}
+                onPress={goToNextSlide}>
+                  {currentSlideIndex === 0 ? 
+                    <Image source={Images.step1} style={{ width: 150, height: 150 }} />
+                    :
+                    null
+                  }
+                  {currentSlideIndex === 1 ? 
+                    <Image source={Images.step2} style={{ width: 150, height: 150 }} />
+                    :
+                    null
+                  }
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+    );
+  };
 
   return (
-    <>
-    <AppBg />
-        <Onboarding
-          showSkip={false}
-          showNext={false}
-          showPagination={false}
-          pages={[
-            {
-              backgroundColor: 'transparent',
-              title: '',
-              subtitle: '',
-              image: (
-                <View>
-                  <TouchableOpacity style={[Styles.Skip, {marginTop: 30}]} onPress={() => navigation.navigate('UserSignIn')}>
-                    <Text style={[Styles.fontBlue14]}>{Strings.Skip}</Text>
-                  </TouchableOpacity>
-                  <Animatable.View duration={3000} animation="fadeInDown" style={[Styles.OnBoardingImgView, {marginTop: 80}]}>
-                    <Image source={Images.onboarding_one} style={[Styles.OnBoardingImg, Styles.width1_2]} resizeMode='contain' />
-                  </Animatable.View>
-                  <View style={[Styles.OnBoardingTextView, {marginTop: 30}]}>
-                    <Text style={[Styles.fontBlack24, Styles.fontBold24]}>{Strings.BoardingTitleOne}</Text>
-                    <Text style={[Styles.fontGray16, Styles.fontBook16]}>{Strings.BoardingOneDescription}</Text>
-                    <View style={[Styles.alignSelfCenter, {marginTop: 80}]}>
-                      <Image
-                        source={Images.step1}
-                        style={{ width: 150, height: 150 }}
-                      />
-                    </View>
-                  </View>
-                </View>
-              ),
-            },
-            {
-              backgroundColor: 'transparent',
-              title: '',
-              subtitle: '',
-              image: (
-                <View>
-                  <TouchableOpacity style={[Styles.Skip, {marginTop: 30}]} onPress={() => navigation.navigate('UserSignIn')}>
-                    <Text style={[Styles.fontBlue14]}>{Strings.Skip}</Text>
-                  </TouchableOpacity>
-                  <Animatable.View duration={3000} animation="fadeInDown" style={[Styles.OnBoardingImgView, {marginTop: 80}]}>
-                    <Image source={Images.onboarding_two} style={[Styles.OnBoardingImg, Styles.width1_2]} resizeMode='contain' />
-                  </Animatable.View>
-                  <View style={[Styles.OnBoardingTextView, {marginTop: 30}]}>
-                    <Text style={[Styles.fontBlack24, Styles.fontBold24]}>{Strings.BoardingTitleTwo}</Text>
-                    <Text style={[Styles.fontGray16, Styles.fontBook16]}>{Strings.BoardingTwoDescription}</Text>
-                    <View style={[Styles.alignSelfCenter, {marginTop: 80}]}>
-                      <Image
-                        source={Images.step2}
-                        style={{ width: 150, height: 150 }}
-                      />
-                    </View>
-                  </View>
-                </View>
-              ),
-            },
-            {
-              backgroundColor: 'transparent',
-              title: '',
-              subtitle: '',
-              image: (
-                <View>
-                  <Animatable.View duration={3000} animation="fadeInDown" style={[Styles.OnBoardingImgView, {marginTop: 80}]}>
-                    <Image source={Images.onboarding_three} style={[Styles.OnBoardingImg, Styles.width1_2]} resizeMode='contain' />
-                  </Animatable.View>
-                  <View style={[Styles.OnBoardingTextView, {marginTop: 30}]}>
-                    <Text style={[Styles.fontBlack24, Styles.fontBold24]}>{Strings.BoardingTitleThree}</Text>
-                    <Text style={[Styles.fontGray16, Styles.fontBook16]}>{Strings.BoardingThreeDescription}</Text>
-                    <TouchableOpacity style={[Styles.alignSelfCenter, {marginTop: 80}]} onPress={() => navigation.navigate('UserSignIn')}>
-                      <Image
-                        source={Images.step3}
-                        style={{ width: 150, height: 150 }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ),
-            },
-          ]}
-        />
-    </>
+    <SafeAreaView style={{ flex: 1, }}>
+      <AppBg />
+      <FlatList
+        ref={ref}
+        onMomentumScrollEnd={updateCurrentSlideIndex}
+        contentContainerStyle={{ height: height * 0.75, position: 'relative' }}
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        data={slides}
+        pagingEnabled
+        renderItem={({ item }) => <Slide item={item} />}
+      />
+      <Footer />
+    </SafeAreaView>
   );
-}
+};
 
-export default HomeCareSlide;
+
+export default UserSlide;

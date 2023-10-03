@@ -177,11 +177,17 @@ const AddCategory = ({ navigation }: { navigation: any }) => {
       console.log('API response true =====>', JSON.stringify(response));
       if(response.status === true) {
         setVisible(true)
-        const CaretakerId = response?.data?.ResponseData?.category_id
-        if(CaretakerId !== null && CaretakerId !== undefined){
+        const caretaker_id = response?.data?.ResponseData?.category_id
+        const homecare_id = response?.data?.ResponseData?.id
+        const user_id = response?.data?.ResponseData?.user_id
+        if(caretaker_id !== null && caretaker_id !== undefined && homecare_id !== null && homecare_id !== undefined && user_id !== null && user_id !== undefined){
           try {
-            await AsyncStorage.setItem('CaretakerId', CaretakerId.toString());
-            console.log('CaretakerId ========================>', CaretakerId);
+            await AsyncStorage.setItem('caretaker_id', caretaker_id.toString());
+            await AsyncStorage.setItem('homecare_id', homecare_id.toString());
+            await AsyncStorage.setItem('user_id', user_id.toString());
+            console.log('caretaker_id ========================>', caretaker_id);
+            console.log('homecare_id ===================================>', homecare_id);
+            console.log('user id ===================================>', user_id);
           } catch (error) {
             console.error('Error storing CaretakerId in AsyncStorage:', error);
           }            
@@ -240,7 +246,7 @@ const AddCategory = ({ navigation }: { navigation: any }) => {
           <View style={[Styles.marginHorizontal15, Styles.mt20]}>
 
             <View style={Styles.alignItemCenter}>
-              <View style={{position: 'relative', backgroundColor: 'pink'}}>
+              <View style={{position: 'relative'}}>
 
                 {selectGallery ? (
                 <>
@@ -259,7 +265,7 @@ const AddCategory = ({ navigation }: { navigation: any }) => {
                   </>
               ) : (
                 <>
-                  <Image source={Images.CategoryImg} style={Styles.loginBrand} />
+                  <Image source={Images.avatar} style={Styles.loginBrand} />
                   <TouchableOpacity onPress={GenderNavigation} style={{position: 'absolute', right: -20, bottom: -15}}>
                     <Image source={Images.ProfileEdit} style={Styles.uploadEdit}/>
                   </TouchableOpacity>

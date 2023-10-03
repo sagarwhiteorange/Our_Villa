@@ -28,8 +28,11 @@ const ViewCategory = (props: any) => {
 
     try {
       const response = await CaretakerPersonList(params)
-      setChildrenList(response?.data?.ResponseData)
-      console.log('Add children list response =======>', response?.data?.ResponseData);
+      if(response?.data?.ResponseData?.HomeCarePerson) {
+        const respMap = response?.data?.ResponseData?.HomeCarePerson.map((item: any) => item)
+        console.log('respMap ==================>', respMap);
+        setChildrenList(respMap)
+      }
       
     } catch (error) {
       console.log('Add children list error =======>', error)      
@@ -69,7 +72,7 @@ const ViewCategory = (props: any) => {
                     {item.profile_pic ? 
                       <Image source={{uri: item.profile_pic}} style={Styles.loginBrand} />
                       :
-                      null
+                      <Image source={Images.avatar} style={Styles.loginBrand} />
                     }                  
                       <View style={Styles.marginHorizontal15}>
                         <Text style={[Styles.title, Styles.fontMedium18]}>{item.fullname}</Text>
@@ -81,7 +84,7 @@ const ViewCategory = (props: any) => {
                           </View>
                           <View style={[Styles.alignCenter, Styles.ml10]}>
                             <Image source={Images.boy} style={[Styles.w16, Styles.h16]} /> 
-                            <Text style={[Styles.fontBook14]}> {item.gender == 0 ? 'Male' : item.gender == 1 ? 'femail' : 'other'}</Text>
+                            <Text style={[Styles.fontBook14]}> {item.gender == 'M' ? 'Male' : item.gender == 'F' ? 'Femail' : 'other'}</Text>
                           </View>
                         </View>
                       </View>

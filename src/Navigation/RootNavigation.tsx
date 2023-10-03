@@ -13,7 +13,7 @@ export default function RootNavigation() {
   
   return(
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="AddCategory">
+      <Stack.Navigator initialRouteName="Category">
         <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}}></Stack.Screen>
         <Stack.Screen name="UserSelect" component={UserSelect} options={{headerShown: false}}></Stack.Screen>
         {UserNavigation(Stack)}

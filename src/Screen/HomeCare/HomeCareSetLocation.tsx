@@ -7,7 +7,7 @@ import { ParamListBase, useNavigation } from '@react-navigation/native';
 import Geocoder from 'react-native-geocoding';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import Images from '../../Constant/Images';
 
 enum Url {

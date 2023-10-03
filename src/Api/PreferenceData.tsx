@@ -20,8 +20,16 @@ export async function UserID(data: any) {
     await AsyncStorage.setItem('UserID', data)
 }
 
-export async function CaretakerId(data: any) {
-    await AsyncStorage.setItem('CaretakerId', data)
+export async function caretaker_id(data: any) {
+    await AsyncStorage.setItem('caretaker_id', data)
+}
+
+export async function homecare_id(data: any) {
+    await AsyncStorage.setItem('homecare_id', data)
+}
+
+export async function user_id(data: any) {
+    await AsyncStorage.setItem('user_id', data)
 }
 
 
