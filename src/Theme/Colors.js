@@ -1,0 +1,25 @@
+const Colors = {
+    textWhite: '#F3F3F3',
+    textBlack: '#0B1C1F',
+    textGray: '#919D9E',
+    textLightGray: '#818D8E',
+    textPrimary: '#03849C',
+    textGreen: '#139A51',
+    bgWhite: '#FFFFFF',
+    bgLightBlue: '#F2F9FA',
+    textRed: '#EB5757',
+    textDanger: '#B11515',
+    textBlue: '#195EC6',
+    textWarning: '#D6A938',
+    textDarkPink: '#9F0B6D',
+    textOrchid: '#A656D7',
+    textSuccess: '#488E10',
+    bgDanger: '#EDDDDE',
+    bgBlue: '#DDE4F0',
+    bgWarning: '#F0ECE2',
+    bgDarkPink: '#EBDCE6',
+    bgOrchid: '#ECE4F1',
+    bgSuccess: '#E2E9DD',
+}
+
+export default Colors;

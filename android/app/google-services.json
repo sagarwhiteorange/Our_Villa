@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "846085657674",
+    "firebase_url": "https://ourvills-d2d64-default-rtdb.firebaseio.com",
+    "project_id": "ourvills-d2d64",
+    "storage_bucket": "ourvills-d2d64.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846085657674:android:eae45e798881c0789d42b3",
+        "android_client_info": {
+          "package_name": "com.ourvilla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846085657674-ncam1le02jl0o750p5maq3rea6mo4cfd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ourvilla",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "846085657674-sc0j1csbmqpk2l9ue1c5fp96m79ifl8j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiXpGgY2x7vg4vEz8qTUI-nPmvh9hHqSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846085657674-3sdk90s2f1rqipq027n0au85k35npvcg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
